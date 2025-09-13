@@ -6,7 +6,7 @@ import requests
 
 latest_file_path = None
 last_position = 0
-log_folder = r"C:\Users\cresc\AppData\Locallow\VRChat\VRChat"
+log_folder = os.path.join(os.environ["USERPROFILE"], r"AppData\Locallow\VRChat\VRChat")
 
 round_type_map = {
     "Classic": "クラシック",
