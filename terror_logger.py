@@ -10,7 +10,9 @@ log_folder = os.path.join(os.environ["USERPROFILE"], r"AppData\Locallow\VRChat\V
 
 round_type_map = {
     "Classic": "クラシック",
-    "BloodBath": "ブラッドバス",
+    "Bloodbath": "ブラッドバス",
+    "Double Trouble": "ブラッドバス",
+    "ダブルトラブル": "ブラッドバス", #ダブトラ勢対応はしてません
     "Fog": "霧",
     "Alternate": "オルタネイト",
     "Sabotage": "サボタージュ",
@@ -20,7 +22,8 @@ round_type_map = {
     "Ghost": "ゴースト",
     "Unbound": "アンバウンド",
     "8 Pages": "8ページ",
-    "Ghost (Alternate)": "ゴースト (Alternate)",
+    "Ghost (Alternate)": "ゴーストオルタネイト",
+    "ゴースト (Alternate)": "ゴーストオルタネイト",
 }
 
 def check_latest_file():
@@ -29,12 +32,12 @@ def check_latest_file():
     files = glob.glob(pattern)
 
     if files:
-        latest_file_path = max(files, key=os.path.getctime)
+        latest_file_path = max(files, key=os.path.getmtime)
     else:
         url = entry_url.get()
         if url:
             try:
-                requests.post(url, json={"content": "OSCを有効にしてください."})
+                requests.post(url, json={"content": "ログを有効にしてください."})
             except Exception as e:
                 print("送信エラー:", e)
 
@@ -65,7 +68,6 @@ def get_terror():
             print("ログ読み込みエラー:", e)
     root.after(100, get_terror)
 
-# ウィンドウ作成
 root = tk.Tk()
 root.title("TerrorLogger")
 
