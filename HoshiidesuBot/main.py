@@ -1,5 +1,4 @@
 import discord
-from discord import app_commands
 from discord.ext import commands
 
 TOKEN = ''
@@ -9,6 +8,12 @@ intents.message_content = True
 intents.voice_states = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+bot.webhook_ids = {}
+bot.spreadsheet_keys = {}
+bot.active_members = {}
+bot.round_choices = {}
+bot.text_channels = {}
 
 @bot.event
 async def on_ready():
