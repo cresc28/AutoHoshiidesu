@@ -18,10 +18,9 @@ class VcCommandsCog(commands.Cog):
             await interaction.response.send_message("VC接続後に入力してください")
             return
         await interaction.response.defer(ephemeral=True)
-        print("テスト1")
+        
         channel = interaction.user.voice.channel
         vc = interaction.guild.voice_client
-        print("テスト1.1")
 
         if vc:
             if vc.channel == channel:
@@ -30,7 +29,9 @@ class VcCommandsCog(commands.Cog):
             else:
                 await vc.move_to(channel)
         else:
+            print("問題箇所")
             await channel.connect()
+            print("問題箇所")
 
         print("テスト1.2")
         members = self.bot.active_members.setdefault(interaction.guild.id, set())
