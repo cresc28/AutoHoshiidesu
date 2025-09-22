@@ -154,7 +154,7 @@ class GSheetReader(commands.Cog):
         isContinue = True if choice == 4 else False
 
         def play_audio(file_name):
-            source = discord.FFmpegPCMAudio(executable="ffmpeg", source=fr"audio\{file_name}")
+            source = discord.FFmpegPCMAudio(executable="ffmpeg", source=fr"audio/{file_name}")
             voice_client.play(source)
 
         for terror_num in range(terror_count):
