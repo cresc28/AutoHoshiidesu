@@ -17,9 +17,9 @@ class VcCommandsCog(commands.Cog):
         if interaction.user.voice is None:
             await interaction.response.send_message("VC接続後に入力してください")
             return
-        await interaction.response.defer(ephemeral=True)
         
         channel = interaction.user.voice.channel
+        print(channel, type(channel), channel.guild.id)
         vc = interaction.guild.voice_client
 
         if vc:
@@ -39,12 +39,7 @@ class VcCommandsCog(commands.Cog):
                 members.add(member.id)
         self.bot.text_channels[interaction.guild.id] = interaction.channel
         view = ConfigPage1(self.bot, interaction.guild.id)
-        await interaction.followup.send(
-            content=f"{channel}に接続しました",
-            embed=view.embed,
-            view=view,
-            ephemeral=True
-        )   
+        await interaction.response.send_message(content=f"{channel}に接続しました", embed=view.embed, view=view, ephemeral=True)
 
     @app_commands.command(name="leave", description="VCから切断")
     async def leave(self, interaction: discord.Interaction):
