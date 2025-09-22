@@ -7,6 +7,7 @@ import requests
 latest_file_path = None
 last_position = 0
 log_folder = os.path.join(os.environ["USERPROFILE"], r"AppData\Locallow\VRChat\VRChat")
+SAVE_FILE = "saved_url.txt"
 
 round_type_map = {
     "Classic": "クラシック",
@@ -25,6 +26,17 @@ round_type_map = {
     "Ghost (Alternate)": "ゴーストオルタネイト",
     "ゴースト (Alternate)": "ゴーストオルタネイト",
 }
+
+def save_url(event=None):
+    url = entry_url.get().strip()
+    with open(SAVE_FILE, "w", encoding="utf-8") as f:
+        f.write(url)
+
+def load_url():
+    if os.path.exists(SAVE_FILE):
+        with open(SAVE_FILE, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    return ""
 
 def check_latest_file():
     global latest_file_path
@@ -75,7 +87,12 @@ tk.Label(root, text="Webhook URL:").pack(padx=10, pady=5)
 entry_url = tk.Entry(root, width=60)
 entry_url.pack(padx=10, pady=5)
 
-root.after(1000, check_latest_file)
+saved_url = load_url()
+if saved_url:
+    entry_url.insert(0, saved_url)
 
+entry_url.bind("<KeyRelease>", save_url)
+
+root.after(1000, check_latest_file)
 root.after(1000, get_terror)
 root.mainloop()

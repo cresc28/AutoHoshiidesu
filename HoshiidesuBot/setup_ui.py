@@ -3,7 +3,7 @@ import re
 from discord import Interaction
 from save_config import save_config, load_config
 
-#discordのGUIよくわからん GPT頼り
+#discordのGUIよくわからん
 class ConfigPage1(discord.ui.View):
     def __init__(self, bot, guild_id: int):
         super().__init__(timeout=None)
@@ -53,6 +53,7 @@ class ConfigPage1(discord.ui.View):
 
     async def load_round_settings(self, guild_id: int, channel: discord.TextChannel):
         key = self.bot.spreadsheet_keys.get(guild_id)
+
         if key is None:
             return
 
@@ -62,13 +63,13 @@ class ConfigPage1(discord.ui.View):
             sh = client.open_by_key(key)
             worksheet = sh.worksheet("設定")
             all_values = worksheet.get_all_values()
-            messages = []
-            
             guild_data = {}
+            messages = []
+            round_types_to_load = []
 
             for row_index in range(1,12):
                 row = all_values[row_index]
-                round = row[0]
+                round_type = row[0]
                 count = 0
                 choice_col = None #1・・・スキップ、2・・・既定枠、3・・・希望枠、4・・・全続行
 
@@ -80,20 +81,31 @@ class ConfigPage1(discord.ui.View):
                 if choice_col is None:
                     choice_col = 3
 
-                choice =  all_values[0][choice_col]
+                choice = all_values[0][choice_col]
+                guild_data[round_type] = choice_col
 
-                guild_data[round] = choice_col
+                if choice_col != 1:
+                    round_types_to_load.append(round_type)  # 後で読み込む
 
                 if count == 0:
-                    messages.append(f'{round}: {choice} (未設定のためデフォルト)')
-
-                elif(count > 1):
-                    messages.append(f'{round}: {choice} (複数列にチェックが入っています)')
+                    messages.append(f'{round_type}: {choice} (未設定のためデフォルト)')
+                elif count > 1:
+                    messages.append(f'{round_type}: {choice} (複数列にチェックが入っています)')
                 else:
-                    messages.append(f'{round}: {choice}')
-            
+                    messages.append(f'{round_type}: {choice}')
+
             self.bot.round_choices[guild_id] = guild_data
             await channel.send("周回ルール:\n" + "\n".join(messages))
+
+            for round_type in round_types_to_load:
+                try:
+                    round_ws = sh.worksheet(round_type)
+                    all_rows = round_ws.get_all_values()
+                    if guild_id not in self.bot.sheet_cache:
+                        self.bot.sheet_cache[guild_id] = {}
+                    self.bot.sheet_cache[guild_id][round_type] = all_rows
+                except gspread.WorksheetNotFound:
+                    pass
             
         except Exception as e:
             print(f"シート読み込みに失敗:", e)
