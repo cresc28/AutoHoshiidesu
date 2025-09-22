@@ -96,17 +96,20 @@ class GSheetReader(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        print("テスト1")
         voice_client = discord.utils.get(self.bot.voice_clients, guild=message.guild)
         if voice_client is None:
             return
         
         guild_id = message.guild.id
         webhook_id = self.bot.webhook_ids.get(guild_id)
+        print("テスト2")
 
         if message.webhook_id != webhook_id or message.webhook_id is None:
             return
         
         lines = message.content.splitlines()
+        print("テスト3")
 
         if len(lines) < 2:
             return 
@@ -114,11 +117,14 @@ class GSheetReader(commands.Cog):
         round_type = lines[0].strip()
         terrors = lines[1].split()
 
+        print("テスト4")
+
         channel = self.bot.text_channels.get(message.guild.id)
         guild_choices = self.bot.round_choices.get(guild_id, {})
         choice = guild_choices.get(round_type, None) #1・・・スキップ、2・・・既定枠、3・・・希望枠、4・・・全続行
         ALTERNATE_TERRORS_COUNT = 36
 
+        print("テスト5")
         if choice is None:
             if guild_choices.get("オルタネイト", {}).get(round_type) is None:
                 await channel.send("設定完了が押されていません")
@@ -139,7 +145,8 @@ class GSheetReader(commands.Cog):
             terrors[2] = tmp
             terrors[1] = str(int(terrors[1]) + ALTERNATE_TERRORS_COUNT)
             terrors[2] = str(int(terrors[2]) + ALTERNATE_TERRORS_COUNT)
-
+        
+        print("テスト6")
         try:
             spreadsheet_key = self.bot.spreadsheet_keys.get(guild_id)
             all_rows = await self.get_sheet_rows(guild_id, round_type, spreadsheet_key)
@@ -156,6 +163,8 @@ class GSheetReader(commands.Cog):
         def play_audio(file_name):
             source = discord.FFmpegPCMAudio(executable="ffmpeg", source=fr"audio/{file_name}")
             voice_client.play(source)
+
+        print("テスト7")
 
         for terror_num in range(terror_count):
             for row in rows:
@@ -180,6 +189,8 @@ class GSheetReader(commands.Cog):
                             
                         else:
                             requesters.add(names[col])
+        
+        print("テスト8")
 
         if not requesters and not requesters_midClassic:
             if isContinue:
