@@ -29,9 +29,11 @@ class VcCommandsCog(commands.Cog):
             else:
                 await vc.move_to(channel)
         else:
-            print("問題箇所")
-            await channel.connect()
-            print("問題箇所")
+            try:
+                await channel.connect()
+                print("問題なし")
+            except discord.DiscordException as e:
+                print(f"接続中にエラーが発生しました: {e}")
 
         print("テスト1.2")
         members = self.bot.active_members.setdefault(interaction.guild.id, set())
