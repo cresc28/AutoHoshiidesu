@@ -12,9 +12,9 @@ class ConfigPage1(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
         self.guild_id = guild_id
-        print("テスト4")
+
         load_config(self.bot, guild_id)
-        print("テスト5")
+
         self.embed = discord.Embed(title="設定")
         self.embed.add_field(
             name="Webhook ID(TerrorLogger出力先)",
