@@ -29,23 +29,22 @@ class VcCommandsCog(commands.Cog):
             else:
                 await vc.move_to(channel)
         else:
-            try:
-                await channel.connect()
-                print("問題なし")
-            except discord.DiscordException as e:
-                print(f"接続中にエラーが発生しました: {e}")
+            print("問題箇所")
+            await channel.connect()
+            print("問題箇所")
 
-        print("テスト1.2")
         members = self.bot.active_members.setdefault(interaction.guild.id, set())
-        print("テスト1.3")
         for member in channel.members:
             if not member.bot:
                 members.add(member.id)
-        print("テスト2")
         self.bot.text_channels[interaction.guild.id] = interaction.channel
         view = ConfigPage1(self.bot, interaction.guild.id)
-        print("テスト3")
-        await interaction.response.send_message(content=f"{channel}に接続しました", embed=view.embed, view=view, ephemeral=True)
+        await interaction.followup.send(
+            content=f"{channel}に接続しました",
+            embed=view.embed,
+            view=view,
+            ephemeral=True
+        )   
 
     @app_commands.command(name="leave", description="VCから切断")
     async def leave(self, interaction: discord.Interaction):
