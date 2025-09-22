@@ -1,5 +1,8 @@
 import discord
 import re
+import os
+import json
+import gspread
 from discord import Interaction
 from save_config import save_config, load_config
 
@@ -57,8 +60,10 @@ class ConfigPage1(discord.ui.View):
         if key is None:
             return
 
-        import gspread
-        client = gspread.service_account(filename="sheet-reader.json")
+        sa_json_str = os.getenv("GOOGLE_SA_JSON")
+        sa_info = json.loads(sa_json_str)
+        client = gspread.service_account_from_dict(sa_info)
+
         try:
             sh = client.open_by_key(key)
             worksheet = sh.worksheet("設定")

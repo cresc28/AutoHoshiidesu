@@ -1,13 +1,17 @@
 import gspread
 import discord
+import os
+import json
 from discord.ext import commands
 from discord import app_commands
 
 class GSheetReader(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.client = gspread.service_account(filename="sheet-reader.json")
         self.guild_configs = {}
+        sa_json_str = os.getenv("GOOGLE_SA_JSON")
+        sa_info = json.loads(sa_json_str)
+        self.client = gspread.service_account_from_dict(sa_info)
 
     async def get_sheet_rows(self, guild_id, round_type, spreadsheet_key):
         if guild_id in self.bot.sheet_cache and round_type in self.bot.sheet_cache[guild_id]:
