@@ -14,13 +14,13 @@ class VcCommandsCog(commands.Cog):
     
     @app_commands.command(name="join", description="VCに接続")
     async def join(self, interaction: discord.Interaction):
-        print("テスト1")
         if interaction.user.voice is None:
             await interaction.response.send_message("VC接続後に入力してください")
             return
-
+        print("テスト1")
         channel = interaction.user.voice.channel
         vc = interaction.guild.voice_client
+        print("テスト1.1")
 
         if vc:
             if vc.channel == channel:
@@ -31,7 +31,9 @@ class VcCommandsCog(commands.Cog):
         else:
             await channel.connect()
 
+        print("テスト1.2")
         members = self.bot.active_members.setdefault(interaction.guild.id, set())
+        print("テスト1.3")
         for member in channel.members:
             if not member.bot:
                 members.add(member.id)
