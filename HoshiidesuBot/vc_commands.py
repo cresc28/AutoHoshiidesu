@@ -19,7 +19,6 @@ class VcCommandsCog(commands.Cog):
             return
         
         channel = interaction.user.voice.channel
-        print(channel, type(channel), channel.guild.id)
         vc = interaction.guild.voice_client
 
         if vc:
@@ -29,9 +28,20 @@ class VcCommandsCog(commands.Cog):
             else:
                 await vc.move_to(channel)
         else:
-            print("問題箇所")
-            await channel.connect()
-            print("問題箇所")
+            try:
+                print("VC接続開始", flush=True)
+                await channel.connect()
+                print("VC接続成功", flush=True)
+            except discord.errors.Forbidden as e:
+                print("VC接続エラー: 権限不足 (Forbidden)", e, flush=True)
+                await interaction.followup.send("VC接続に必要な権限がありません", ephemeral=True)
+            except discord.errors.ClientException as e:
+                print("VC接続エラー: ClientException", e, flush=True)
+                await interaction.followup.send("VC接続に失敗しました (ClientException)", ephemeral=True)
+            except Exception as e:
+                print("VC接続エラー: その他", e, flush=True)
+                await interaction.followup.send(f"VC接続に失敗しました: {e}", ephemeral=True)
+
 
         members = self.bot.active_members.setdefault(interaction.guild.id, set())
         for member in channel.members:
