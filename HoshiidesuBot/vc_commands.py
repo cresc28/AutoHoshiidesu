@@ -17,6 +17,7 @@ class VcCommandsCog(commands.Cog):
         if interaction.user.voice is None:
             await interaction.response.send_message("VC接続後に入力してください")
             return
+        await interaction.response.defer(ephemeral=True)
         print("テスト1")
         channel = interaction.user.voice.channel
         vc = interaction.guild.voice_client
