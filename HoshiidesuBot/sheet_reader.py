@@ -154,9 +154,8 @@ class GSheetReader(commands.Cog):
 
         def play_audio(file_name):
             path = f"HoshiidesuBot/audio/{file_name}"
-            print(f"再生試行: {path}, 存在={os.path.exists(path)}")
             try:
-                source = discord.FFmpegPCMAudio(executable="ffmpeg", source=path)
+                source = discord.FFmpegPCMAudio(executable="/usr/bin/ffmpeg", source=path)
                 voice_client.play(source)
             except Exception as e:
                 print(f"音声再生エラー: {e}")
