@@ -154,11 +154,8 @@ class GSheetReader(commands.Cog):
 
         def play_audio(file_name):
             path = f"HoshiidesuBot/audio/{file_name}"
-            try:
-                source = discord.FFmpegPCMAudio(source=path)
-                voice_client.play(source)
-            except Exception as e:
-                print(f"音声再生エラー: {e}")
+            source = discord.FFmpegPCMAudio(source=path)
+            voice_client.play(source)
 
         for terror_num in range(terror_count):
             for row in rows:
