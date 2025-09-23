@@ -203,7 +203,6 @@ class GSheetReader(commands.Cog):
                 await channel.send('\n'.join(msg))
 
             else:
-                await channel.send(f"希望者 :\n {" ".join(requesters)}")
-
+                await channel.send(f"希望者 :\n {' '.join(requesters)}")
 async def setup(bot):
     await bot.add_cog(GSheetReader(bot))
