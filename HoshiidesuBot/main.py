@@ -30,7 +30,7 @@ async def restart_checker():
             next_restart += timedelta(days=1)
         wait_seconds = (next_restart - now).total_seconds()
         await asyncio.sleep(wait_seconds)
-        sys.exit(1)
+        os._exit(1)
 
 @bot.event
 async def on_ready():
