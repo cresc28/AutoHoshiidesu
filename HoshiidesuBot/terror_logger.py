@@ -68,6 +68,8 @@ def get_terror():
             if new_lines.strip():
                 if "Killers have been set" in new_lines:
                     match = re.search("Killers have been set - (.+) // Round type is (.+)", new_lines)
+                    if not match:
+                        return
 
                     terror = match.group(1)
                     round_type = match.group(2)

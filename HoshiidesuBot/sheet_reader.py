@@ -150,7 +150,7 @@ class GSheetReader(commands.Cog):
         rows = all_rows[2:]
         requesters = set()
         requesters_midClassic = set()
-        isContinue = True if choice == 4 else False
+        is_continue = True if choice == 4 else False
 
         def play_audio(file_name):
             path = f"HoshiidesuBot/audio/{file_name}"
@@ -168,7 +168,7 @@ class GSheetReader(commands.Cog):
                     
                     if ids[col].strip().lower() == "default":
                         if choice in (2, 3):
-                            isContinue = True
+                            is_continue = True
                         continue
 
                     if int(ids[col]) in self.bot.active_members.get(guild_id, set()):
@@ -182,7 +182,7 @@ class GSheetReader(commands.Cog):
                             requesters.add(names[col])
         
         if not requesters and not requesters_midClassic:
-            if isContinue:
+            if is_continue:
                 play_audio("zokkou.wav")
 
             else:
