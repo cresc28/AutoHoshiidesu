@@ -39,20 +39,17 @@ def load_url():
     return ""
 
 def check_latest_file():
-    global latest_file_path
+    global latest_file_path, last_position
     pattern = os.path.join(log_folder, "output_log_*.txt")
     files = glob.glob(pattern)
-
     if files:
         latest_file_path = max(files, key=os.path.getmtime)
-    else:
-        url = entry_url.get()
-        if url:
-            try:
-                requests.post(url, json={"content": "ログを有効にしてください."})
-            except Exception as e:
-                print("送信エラー:", e)
-
+        try:
+            with open(latest_file_path, "rb") as f:
+                f.seek(0, os.SEEK_END)
+                last_position = f.tell()
+        except Exception as e:
+            print("ログ読み込みエラー:", e)
     root.after(30000, check_latest_file)
 
 def get_terror():
@@ -62,24 +59,23 @@ def get_terror():
         try:
             with open(latest_file_path, "r", encoding="utf-8") as f:
                 f.seek(last_position)
-                new_lines = f.read()
+                for line in f:
+                    if "Killers have been set" in line:
+                        match = re.search(r"Killers have been set - (.+) // Round type is (.+)", line)
+                        if match:
+                            terror = match.group(1)
+                            round_type = match.group(2)
+                            round_type_display = round_type_map.get(round_type, round_type)
+                            url = entry_url.get()
+                            if url:
+                                try:
+                                    requests.post(url, json={"content": f"{round_type_display}\n{terror}"})
+                                except Exception as e:
+                                    print("送信エラー:", e)
                 last_position = f.tell()
-
-            if new_lines.strip():
-                if "Killers have been set" in new_lines:
-                    match = re.search("Killers have been set - (.+) // Round type is (.+)", new_lines)
-                    if not match:
-                        return
-
-                    terror = match.group(1)
-                    round_type = match.group(2)
-                    round_type_display = round_type_map.get(round_type, round_type)
-
-                    url = entry_url.get()
-                    if url:
-                        requests.post(url, json={"content": f"{round_type_display}\n{terror}"})
         except Exception as e:
             print("ログ読み込みエラー:", e)
+
     root.after(100, get_terror)
 
 root = tk.Tk()
